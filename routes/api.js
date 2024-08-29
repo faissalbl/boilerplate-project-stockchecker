@@ -4,13 +4,16 @@ const { getStock } = require('../services/StockService');
 
 module.exports = function (app) {
 
-  app.route('/api/stock-prices')
-    .get(async function (req, res) {
-      
-      const pStock = req.query.stock;
-      const pLike = req.query.like;
+  function getIp(req) {
+    return req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  }
 
-      const stockData = await getStock(pStock);
+  app.route('/api/stock-prices')
+    .get(async function (req, res) {     
+      const pStock = req.query.stock;
+      const pLike = req.query.like || "";
+
+      const stockData = await getStock(pStock, "true" === pLike.toLowerCase());
       console.log(pStock, pLike, stockData);
       res.json({ stockData });
     });
