@@ -12,8 +12,8 @@ module.exports = function (app) {
     .get(async function (req, res) {     
       const pStock = req.query.stock;
       const pLike = req.query.like || "";
-
-      const stockData = await getStock(pStock, "true" === pLike.toLowerCase());
+      const ip = getIp(req);
+      const stockData = await getStock(pStock, "true" === pLike.toLowerCase(), ip);
       console.log(pStock, pLike, stockData);
       res.json({ stockData });
     });

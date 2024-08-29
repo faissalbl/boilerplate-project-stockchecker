@@ -2,6 +2,8 @@ const chaiHttp = require('chai-http');
 const chai = require('chai');
 const assert = chai.assert;
 const server = require('../server');
+const VotedIP = require('../models/VotedIP');
+const StockLikes = require('../models/StockLikes');
 
 chai.use(chaiHttp);
 
@@ -9,9 +11,11 @@ let req;
 
 suite('Functional Tests', function() {
 
-    suiteSetup(() => {
+    suiteSetup(async () => {
         console.log('creating chai request');
         req = chai.request(server).keepOpen();
+        await VotedIP.deleteMany();
+        await StockLikes.deleteMany();
     });
 
     test('Viewing one stock: GET request to /api/stock-prices/', async () => {
