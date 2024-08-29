@@ -10,6 +10,7 @@ let req;
 suite('Functional Tests', function() {
 
     suiteSetup(() => {
+        console.log('creating chai request');
         req = chai.request(server).keepOpen();
     });
 
@@ -22,5 +23,22 @@ suite('Functional Tests', function() {
         assert.equal(stock, 'GOOG');
         assert.isNumber(price);
         assert.isNumber(likes);
+    });
+
+    test('Viewing one stock and liking it: GET request to /api/stock-prices/', async () => {
+        const res = await req.get('/api/stock-prices?stock=GOOG&like=true')
+        const { stockData } = res.body;
+        assert.isDefined(stockData);
+
+        const { stock, price, likes } = stockData;
+        assert.equal(stock, 'GOOG');
+        assert.isNumber(price);
+        assert.isNumber(likes);
+        assert.isTrue(likes >= 1)
+    });
+
+    suiteTeardown(() => {
+        console.log("closing the chai request");
+        req.close();
     });
 });
