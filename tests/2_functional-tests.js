@@ -41,6 +41,23 @@ suite('Functional Tests', function() {
         assert.isTrue(likes >= 1)
     });
 
+    test('Viewing the same stock and liking it again: GET request to /api/stock-prices/', async () => {
+        async function executeTest() {
+            const res = await req.get('/api/stock-prices?stock=GOOG&like=true')
+            const { stockData } = res.body;
+            assert.isDefined(stockData);
+
+            const { stock, price, likes } = stockData;
+            assert.equal(stock, 'GOOG');
+            assert.isNumber(price);
+            assert.isNumber(likes);
+            assert.isTrue(likes >= 1)
+        }
+
+        await executeTest();
+        await executeTest();
+    });
+
     suiteTeardown(() => {
         console.log("closing the chai request");
         req.close();
