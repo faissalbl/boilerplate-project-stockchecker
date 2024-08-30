@@ -70,6 +70,8 @@ suite('Functional Tests', function() {
             assert.isNumber(price);
             assert.isNumber(likes);
         });
+
+        console.log(stockData);
     });
 
     suiteTeardown(() => {
