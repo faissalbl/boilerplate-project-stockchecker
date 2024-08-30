@@ -19,7 +19,7 @@ suite('Functional Tests', function() {
     });
 
     test('Viewing one stock: GET request to /api/stock-prices/', async () => {
-        const res = await req.get('/api/stock-prices?stock=GOOG')
+        const res = await req.get('/api/stock-prices?stock=GOOG');
         const { stockData } = res.body;
         assert.isDefined(stockData);
 
@@ -30,7 +30,7 @@ suite('Functional Tests', function() {
     });
 
     test('Viewing one stock and liking it: GET request to /api/stock-prices/', async () => {
-        const res = await req.get('/api/stock-prices?stock=GOOG&like=true')
+        const res = await req.get('/api/stock-prices?stock=GOOG&like=true');
         const { stockData } = res.body;
         assert.isDefined(stockData);
 
@@ -43,7 +43,7 @@ suite('Functional Tests', function() {
 
     test('Viewing the same stock and liking it again: GET request to /api/stock-prices/', async () => {
         async function executeTest() {
-            const res = await req.get('/api/stock-prices?stock=GOOG&like=true')
+            const res = await req.get('/api/stock-prices?stock=GOOG&like=true');
             const { stockData } = res.body;
             assert.isDefined(stockData);
 
@@ -51,11 +51,25 @@ suite('Functional Tests', function() {
             assert.equal(stock, 'GOOG');
             assert.isNumber(price);
             assert.isNumber(likes);
-            assert.isTrue(likes >= 1)
+            assert.isTrue(likes >= 1);
         }
 
         await executeTest();
         await executeTest();
+    });
+
+    test('Viewing two stocks: GET request to /api/stock-prices/', async () => {
+        const res = await req.get('/api/stock-prices?stock=GOOG&stock=MSFT');
+        const { stockData } = res.body;
+        assert.isArray(stockData);
+        assert.equal(stockData.length, 2);
+
+        stockData.forEach(d => {
+            const { stock, price, likes } = d;
+            assert.include(['GOOG', 'MSFT'], stock);
+            assert.isNumber(price);
+            assert.isNumber(likes);
+        });
     });
 
     suiteTeardown(() => {

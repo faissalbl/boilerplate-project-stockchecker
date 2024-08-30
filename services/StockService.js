@@ -5,7 +5,8 @@ const urlTemplate = "https://stock-price-checker-proxy.freecodecamp.rocks/v1/sto
 const urlTemplateSpaceholder = "[symbol]";
 
 module.exports.getStock = async function(pStock, pLike, ip) {
-    if (!pStock) throw new Error("stock is empty");
+    if (!pStock || Array.isArray(pStock) && pStock.length === 0) 
+        throw new Error("stock is empty");
     const url = urlTemplate.replace(urlTemplateSpaceholder, pStock);
     const res = await fetch(url);
     if (!res.ok) throw new Error(`Request failed with status: ${res.status}`);
@@ -16,7 +17,6 @@ module.exports.getStock = async function(pStock, pLike, ip) {
     if (pLike && !votedIP) {
         likes++;
         await updateStockLikes(stock, likes);
-        console.log("findByIdAndUpdate passed");
         const votedIP = new VotedIP({ _id: ip });
         await votedIP.save();
     }
@@ -26,7 +26,6 @@ module.exports.getStock = async function(pStock, pLike, ip) {
 
 async function getStockLikes(stock) {
     const stockLikes = await StockLikes.findById(stock);
-    console.log("stockLikes: ", stockLikes);
     const likes = stockLikes ? stockLikes.likes : 0;
     return likes;
 }

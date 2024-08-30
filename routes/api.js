@@ -14,7 +14,6 @@ module.exports = function (app) {
       const pLike = req.query.like || "";
       const ip = getIp(req);
       const stockData = await getStock(pStock, "true" === pLike.toLowerCase(), ip);
-      console.log(pStock, pLike, stockData);
       res.json({ stockData });
     });
     
