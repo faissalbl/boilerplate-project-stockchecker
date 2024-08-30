@@ -70,8 +70,21 @@ suite('Functional Tests', function() {
             assert.isNumber(price);
             assert.isNumber(likes);
         });
+    });
 
-        console.log(stockData);
+    test('Viewing two stocks and liking them: GET request to /api/stock-prices/', async () => {
+        const res = await req.get('/api/stock-prices?stock=GOOG&stock=MSFT&like=true');
+        const { stockData } = res.body;
+        assert.isArray(stockData);
+        assert.equal(stockData.length, 2);
+
+        stockData.forEach(d => {
+            const { stock, price, likes } = d;
+            assert.include(['GOOG', 'MSFT'], stock);
+            assert.isNumber(price);
+            assert.isNumber(likes);
+            assert.isTrue(likes > 0);
+        });
     });
 
     suiteTeardown(() => {
