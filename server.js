@@ -3,7 +3,7 @@ require('dotenv').config();
 const express     = require('express');
 const bodyParser  = require('body-parser');
 const cors        = require('cors');
-
+const helmet      = require('helmet');
 const apiRoutes         = require('./routes/api.js');
 const fccTestingRoutes  = require('./routes/fcctesting.js');
 const runner            = require('./test-runner');
@@ -13,12 +13,32 @@ databaseService.connect();
 
 const app = express();
 
+// app.use(helmet.noCache());
+app.use(helmet.contentSecurityPolicy({
+  directives: {
+    defaultSrc: ["'self'"],
+    scriptSrc: ["'self'"],
+    styleSrc: ["'self'"],
+  }
+}));
+    
 app.use('/public', express.static(process.cwd() + '/public'));
 
 app.use(cors({origin: '*'})); //For FCC testing purposes only
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+// const ninetyDaysInSeconds = 60*60*24*90;
+// app.use(helmet({
+//   frameguard: {
+//     action: 'deny'
+//   },
+//   hsts: {
+//     maxAge: ninetyDaysInSeconds, 
+//     force: true
+//   }
+// }));
 
 //Index page (static HTML)
 app.route('/')
@@ -30,8 +50,8 @@ app.route('/')
 fccTestingRoutes(app);
 
 //Routing for API 
-apiRoutes(app);  
-    
+apiRoutes(app); 
+
 //404 Not Found Middleware
 app.use(function(req, res, next) {
   res.status(404)

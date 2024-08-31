@@ -65,10 +65,10 @@ suite('Functional Tests', function() {
         assert.equal(stockData.length, 2);
 
         stockData.forEach(d => {
-            const { stock, price, likes } = d;
+            const { stock, price, rel_likes } = d;
             assert.include(['GOOG', 'MSFT'], stock);
             assert.isNumber(price);
-            assert.isNumber(likes);
+            assert.isNumber(rel_likes);
         });
     });
 
@@ -79,11 +79,10 @@ suite('Functional Tests', function() {
         assert.equal(stockData.length, 2);
 
         stockData.forEach(d => {
-            const { stock, price, likes } = d;
+            const { stock, price, rel_likes } = d;
             assert.include(['GOOG', 'MSFT'], stock);
             assert.isNumber(price);
-            assert.isNumber(likes);
-            assert.isTrue(likes > 0);
+            assert.isNumber(rel_likes);
         });
     });
 

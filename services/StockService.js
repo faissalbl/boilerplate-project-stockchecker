@@ -32,8 +32,26 @@ module.exports.getStock = async function(pStock, pLike, ip) {
     result = await Promise.all(result);
 
     // if it is an array of a single object, use the single object instead of the array
-    if (result.length === 1) result = result[0];
+    if (result.length === 1) result = result[0]
+    else result = calculateRelLikes(result);
 
+    return result;
+}
+
+function calculateRelLikes(stocks) {
+    if (stocks.length != 2) throw new Error("It is only possible to calculate rel_likes for two stocks");
+    const result = [
+        {
+            stock: stocks[0].stock,
+            price: stocks[0].price,
+            rel_likes: stocks[0].likes - stocks[1].likes
+        },
+        {
+            stock: stocks[1].stock,
+            price: stocks[1].price,
+            rel_likes: stocks[1].likes - stocks[0].likes
+        }
+    ];
     return result;
 }
 
